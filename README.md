@@ -1,8 +1,8 @@
- # Machine Learning Assignments Repository
+ # Machine Learning Models Repository
 
 ## Overview
 
-This repository contains my machine learning assignments, organized into subdirectories for each task. Each subdirectory includes:
+This repository contains my machine learning models from my various assignments/ mini projects, organized into subdirectories for each task. Each subdirectory includes:
 - A Jupyter Notebook (`.ipynb`) showcasing the implementation and results of the assignment.
 - A `README.md` file providing a detailed explanation of the task, approach, and findings.
 
