@@ -1,1 +1,3 @@
-Going to upload all my code for a research agent here
+## Future models
+- Agent for Content strategy
+- Agent for Mock test series generation for 9th & 10 standard students.
