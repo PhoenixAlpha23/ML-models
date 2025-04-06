@@ -19,7 +19,7 @@ if generate:
     else:
         # Step 1: Extract Video ID
         video_id = extract_video_id(video_url)
-        st.write(f"🎯 Video ID: `{video_id}`")
+        print(video_id)
 
         # Step 2: Get Transcript
         with st.spinner("📜 Fetching transcript..."):
