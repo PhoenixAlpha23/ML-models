@@ -123,30 +123,22 @@ def generate_twitter_thread_from_transcript(transcript_text: str, tone: str) -> 
         return transcript_text
         
     try:
-        # Limit transcript length
-        max_length = 10000
-        if len(transcript_text) > max_length:
-            transcript_text = transcript_text[:max_length] + "...[truncated]"
-            
-        # Initialize LLM with improved parameters    
-        llm = GroqLLM(
-            model_name="llama3-70b-8192",  # More capable model
-            temperature=0.7,
-            max_tokens=1024
-        )
+        # Your existing code to generate the thread
         
-        # Create prompt
-        prompt = PromptTemplate(template=prompt_template, input_variables=["transcript", "audience_type"])
+        # Process and clean up the raw response
+        raw_thread = llm(formatted_prompt)
         
-        # Generate thread
-        formatted_prompt = prompt.format(transcript=transcript_text, audience_type=tone)
-        thread = llm(formatted_prompt)
+        # Split by numbered format and clean the tweets
+        import re
+        tweets = re.split(r'\n\s*\d+\.|\n\s*\d+\)', raw_thread)
+        tweets = [tweet.strip() for tweet in tweets if tweet.strip() and len(tweet) > 15]
         
-        # Format output for display
-        if thread and not thread.startswith("[ERROR]"):
-            return "✅ Thread Ready!\n\n🧵 Generated Twitter Thread:\n" + thread
-        else:
-            return thread
+        # Reconstruct with proper formatting
+        formatted_tweets = []
+        for i, tweet in enumerate(tweets[:9]):  # Limit to 9 tweets max
+            formatted_tweets.append(f"{i+1}. {tweet}")
+        
+        return "\n\n".join(formatted_tweets)
             
     except Exception as e:
         return f"[ERROR] LLM processing failed: {str(e)}"
