@@ -22,7 +22,6 @@ def extract_video_id(url: str) -> str:
     print(f"[DEBUG] Extracted Video ID: {video_id}")
     return video_id
 
-
 def fetch_transcript_text(video_id: str) -> str:
     """
     Fetches and formats the transcript text for a YouTube video.
@@ -30,12 +29,12 @@ def fetch_transcript_text(video_id: str) -> str:
     """
     if not video_id:
         return "❌ Invalid video ID."
-
     try:
-        transcript = YouTubeTranscriptApi.get_transcript(video_id, languages=['en', 'en-US'])
+        print(f"[DEBUG] Attempting to fetch transcript for video ID: {video_id}")
+       
+        transcript = YouTubeTranscriptApi.get_transcript(video_id, languages=['en'])
         transcript_text = " ".join([entry['text'] for entry in transcript])
         return transcript_text
-
     except TranscriptsDisabled:
         return "❌ Transcripts are disabled for this video."
     except NoTranscriptFound:
@@ -43,4 +42,5 @@ def fetch_transcript_text(video_id: str) -> str:
     except VideoUnavailable:
         return "❌ Video is unavailable."
     except Exception as e:
+        print(f"[DEBUG] Exception details: {type(e).__name__}: {str(e)}")
         return f"❌ Unexpected error: {str(e)}"
