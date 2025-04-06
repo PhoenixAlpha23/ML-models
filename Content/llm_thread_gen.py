@@ -82,7 +82,7 @@ class GroqLLM(LLM, BaseModel):
         }
 
 # ✅ Final thread generator function
-def generate_twitter_thread_from_transcript(transcript_text: str) -> str:
+def generate_twitter_thread_from_transcript(transcript_text: str,audience_type:str) -> str:
     if not transcript_text or transcript_text.startswith("❌"):
         return transcript_text
 
