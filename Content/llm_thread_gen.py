@@ -14,6 +14,8 @@ GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 prompt_template = """
 You are a top-tier content strategist known for writing highly engaging and informative Twitter threads.
 
+Your audience type is: **{audience_type}**
+Adjust the tone, vocabulary, and examples to best match this audience’s preferences.
 Given the transcript of a YouTube video, generate a multi-threaded Twitter chain with these characteristics:
 
 🧲 1. Start with a **powerful 1-liner hook** to capture attention.
@@ -86,9 +88,13 @@ def generate_twitter_thread_from_transcript(transcript_text: str) -> str:
 
     try:
         llm = GroqLLM()
-        prompt = PromptTemplate(template=prompt_template, input_variables=["transcript"])
+        prompt = PromptTemplate(template=prompt_template, input_variables=["transcript","audience_type"])
         chain = prompt | llm | RunnablePassthrough()
-        thread = chain.invoke({"transcript": transcript_text})
+        thread = chain.invoke({
+            "transcript": transcript_text,
+            "audience_type": selected_audience
+})
+
         return thread
     except Exception as e:
         return f"[ERROR] LLM processing failed: {str(e)}"
