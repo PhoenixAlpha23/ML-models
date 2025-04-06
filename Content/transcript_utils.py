@@ -8,7 +8,7 @@ from youtube_transcript_api._errors import (
 )
 import nltk
 from nltk.corpus import stopwords
-from typing import Tuple, List
+from typing import Tuple, List, Union
 
 # Initialize stopwords (only download if needed)
 try:
@@ -21,9 +21,7 @@ except:
 FILLER_WORDS = r'\b(um|uh|like|you know|so|actually|basically|literally)\b'
 
 def extract_video_id(url: str) -> str:
-    """
-    Extracts YouTube video ID from standard or shortened URLs.
-    """
+    """(Unchanged from your original version)"""
     parsed = urlparse(url)
     if 'youtu.be' in parsed.netloc:
         video_id = parsed.path.lstrip('/')
@@ -36,35 +34,23 @@ def extract_video_id(url: str) -> str:
     return video_id
 
 def clean_transcript(text: str) -> str:
-    """
-    Cleans raw transcript text by:
-    - Removing timestamps and speaker labels
-    - Eliminating filler words
-    - Removing stopwords while preserving sentence structure
-    """
-    # Remove timestamps and speaker labels
+    """(Helper function remains the same as before)"""
     text = re.sub(r'\[[\d:]+\]|SPEAKER_\d+:', '', text)
-    
-    # Remove filler words
     text = re.sub(FILLER_WORDS, '', text, flags=re.IGNORECASE)
     
-    # Remove stopwords while preserving sentence boundaries
     sentences = re.split(r'(?<=[.!?])\s+', text)
     cleaned_sentences = []
     
     for sentence in sentences:
         words = sentence.split()
         cleaned_words = [word for word in words if word.lower() not in STOP_WORDS]
-        if cleaned_words:  # Only add non-empty sentences
+        if cleaned_words:
             cleaned_sentences.append(' '.join(cleaned_words))
     
     return ' '.join(cleaned_sentences)
 
 def chunk_text(text: str, chunk_size: int = 4000, overlap: int = 200) -> List[str]:
-    """
-    Splits text into semantically coherent chunks with overlap.
-    Preserves sentence boundaries where possible.
-    """
+    """(Helper function remains the same as before)"""
     sentences = re.split(r'(?<=[.!?])\s+', text)
     chunks = []
     current_chunk = []
@@ -74,8 +60,7 @@ def chunk_text(text: str, chunk_size: int = 4000, overlap: int = 200) -> List[st
         sentence_length = len(sentence)
         if current_length + sentence_length > chunk_size and current_chunk:
             chunks.append(' '.join(current_chunk))
-            # Keep overlap by retaining last few sentences
-            overlap_sentences = min(3, len(current_chunk))  # Keep max 3 sentences for overlap
+            overlap_sentences = min(3, len(current_chunk))
             current_chunk = current_chunk[-overlap_sentences:] + [sentence]
             current_length = sum(len(s) for s in current_chunk)
         else:
@@ -87,41 +72,47 @@ def chunk_text(text: str, chunk_size: int = 4000, overlap: int = 200) -> List[st
     
     return chunks
 
-def fetch_transcript_text(video_id: str, clean: bool = True, chunked: bool = False) -> Tuple[str, List[str]]:
+def fetch_transcript_text(video_id: str, clean: bool = False, chunked: bool = False) -> Union[str, Tuple[str, List[str]]]:
     """
-    Fetches and processes YouTube transcript.
-    Returns:
-    - Tuple of (raw_transcript, cleaned_chunks) if chunked=True
-    - Raw transcript string if clean=False and chunked=False
-    - Cleaned transcript string if clean=True and chunked=False
+    Modified version that maintains backward compatibility with your app.py
     
-    Error messages start with ❌
+    Args:
+        video_id: YouTube video ID
+        clean: If True, returns cleaned transcript
+        chunked: If True, returns tuple (raw_text, chunks)
+    
+    Returns:
+        - If clean=False and chunked=False: returns raw transcript string (original behavior)
+        - If clean=True: returns cleaned transcript string
+        - If chunked=True: returns tuple (raw_text, chunks)
+        - Error messages always start with "❌"
     """
     if not video_id:
-        return "❌ Invalid video ID.", []
+        return "❌ Invalid video ID." if not chunked else ("❌ Invalid video ID.", [])
     
     try:
         print(f"[DEBUG] Fetching transcript for video ID: {video_id}")
         transcript = YouTubeTranscriptApi.get_transcript(video_id, languages=['en'])
         raw_text = " ".join([entry['text'] for entry in transcript])
         
+        # Backward compatibility mode (matches your original app.py)
         if not clean and not chunked:
-            return raw_text, []
+            return raw_text
         
         cleaned_text = clean_transcript(raw_text)
         
-        if not chunked:
-            return cleaned_text, []
+        if chunked:
+            chunks = chunk_text(cleaned_text)
+            return raw_text, chunks
         
-        chunks = chunk_text(cleaned_text)
-        return raw_text, chunks
+        return cleaned_text
         
     except TranscriptsDisabled:
-        return "❌ Transcripts are disabled for this video.", []
+        return "❌ Transcripts are disabled for this video." if not chunked else ("❌ Transcripts are disabled for this video.", [])
     except NoTranscriptFound:
-        return "❌ No transcript found (not available in English or at all).", []
+        return "❌ No transcript found (not available in English or at all)." if not chunked else ("❌ No transcript found (not available in English or at all).", [])
     except VideoUnavailable:
-        return "❌ Video is unavailable.", []
+        return "❌ Video is unavailable." if not chunked else ("❌ Video is unavailable.", [])
     except Exception as e:
         print(f"[DEBUG] Exception details: {type(e).__name__}: {str(e)}")
-        return f"❌ Unexpected error: {str(e)}", []
+        return f"❌ Unexpected error: {str(e)}" if not chunked else (f"❌ Unexpected error: {str(e)}", [])
