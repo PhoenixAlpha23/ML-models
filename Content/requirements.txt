@@ -3,3 +3,4 @@ youtube-transcript-api
 langchain
 pydantic
 requests
+nltk
