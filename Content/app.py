@@ -2,7 +2,7 @@ import streamlit as st
 
 st.set_page_config(page_title="YT ➜ Twitter Thread Gen", page_icon="🎬", layout="centered")
 st.title("🎥 YouTube ➜ 🧵 Twitter Thread Generator")
-st.caption("Powered by transcripts + LLM magic (Groq ⚡ Mixtral)")
+st.caption("By Aryan Tandon")
 st.divider()
 video_url = st.text_input("🔗 Paste a YouTube video URL")
 tone = st.selectbox("💬 Choose the audience tone", ["Boomer", "Gen-Z", "Gen-Alpha"])
@@ -54,4 +54,4 @@ if generate:
                     st.markdown(f"> {tweet}")
                     st.divider()
             
-            st.caption("✨ Now go be a threadboi.")
+            st.caption("Powered by transcripts + LLM magic (Groq ⚡ Mixtral)")
