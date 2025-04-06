@@ -32,7 +32,7 @@ def fetch_transcript_text(video_id: str) -> str:
         return "❌ Invalid video ID."
 
     try:
-        transcript = YouTubeTranscriptApi.get_transcript(video_id, languages=["en"])
+        transcript = YouTubeTranscriptApi.get_transcript(video_id, languages=['en', 'en-US'])
         transcript_text = " ".join([entry['text'] for entry in transcript])
         return transcript_text
 
