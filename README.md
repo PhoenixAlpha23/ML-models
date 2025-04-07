@@ -15,8 +15,8 @@ The goal of this repository is to demonstrate my progress and understanding of v
 ├── 📂 Fraud detection 
 │   ├── Fraud_detection.ipynb
 │   ├── README.md
-├── 📂 Assignment-2
-│   ├── Assignment-2.ipynb
+├── 📂 Content
+│   ├── transcribinator.ipynb
 │   ├── README.md
 └── README.md
 ```
@@ -31,7 +31,7 @@ The goal of this repository is to demonstrate my progress and understanding of v
 
 1. Clone the repository:
    ```bash
-   git clone [https://github.com/<your-username>/<repository-name>.git](https://github.com/PhoenixAlpha23/ML-models)
+   git clone [https://github.com/PhoenixAlpha23/ML-models.git](https://github.com/PhoenixAlpha23/ML-models)
    ```
 
 2. Navigate to the desired assignment folder:
