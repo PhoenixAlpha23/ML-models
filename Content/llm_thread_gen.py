@@ -85,6 +85,13 @@ class GroqLLM(LLM, BaseModel):
                     break
                     
         return "\n\n".join(unique_tweets)
+## New line
+# Personality context for each audience type
+PERSONALITY_CONTEXTS = {
+    "boomer": "Prefers clear, informative, and respectful tone with proper grammar and less slang.",
+    "gen z": "Loves humor, memes, casual tone, slang, emojis, and punchy statements.",
+    "gen a": "Wants futuristic, interactive, and concise content with high visual/emotional appeal."
+}
 
 def generate_twitter_thread_from_transcript(
     transcript_text: str,
@@ -121,7 +128,7 @@ def generate_twitter_thread_from_transcript(
             formatted_prompt = prompt.format(
                 transcript=transcript_text[:10000],
                 audience_type=tone,
-                context_note="Full transcript",
+                context_note=PERSONALITY_CONTEXTS.get(tone.lower(), "General audience context."),
                 tweet_count="5-8"
             )
             thread = llm(formatted_prompt)
@@ -141,11 +148,13 @@ def _process_chunked_transcript(
     full_thread = []
     
     for i, chunk in enumerate(chunk_list):
+        base_note = PERSONALITY_CONTEXTS.get(tone.lower(), "General audience context.")
         context_note = (
-            f"Part {i+1}/{len(chunk_list)} of transcript"
+            f"{base_note} | Part {i+1}/{len(chunk_list)} of transcript"
             if i > 0 else 
-            "Beginning of transcript"
-        )
+            f"{base_note} | Beginning of transcript"
+)
+
         
         response = llm(prompt.format(
             transcript=chunk,
