@@ -12,21 +12,26 @@ GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
 # Enhanced prompt template with chunk support
 prompt_template = """
-You are a top-tier content strategist writing Twitter threads for **{audience_type}** audience.
-Current context: {context_note}
+You are a top-tier content strategist writing Twitter threads for a **{audience_type}** audience.
 
-Transcript portion:
+Your writing should reflect the following personality traits:
+{context_note}
+
+TASK:
+Generate a thread from the following transcript:
+
 {transcript}
 
 FORMAT RULES:
-1. Start with a powerful hook tweet
-2. Include {tweet_count} concise, numbered tweets (1. 2. 3. ...)
-3. End with a strong closer/call-to-action
-4. Use emojis strategically
-5. Make each tweet stand alone
+1. Start with a powerful hook tweet.
+2. Include {tweet_count} concise, numbered tweets (1. 2. 3. ...).
+3. End with a strong closer or call-to-action.
+4. Use emojis, slang, or tone that fits the persona.
+5. Make each tweet capable of standing alone.
 
-IMPORTANT: If continuing a thread, maintain flow from previous tweets.
+IMPORTANT: Match the personality tone in writing style. If continuing a thread, maintain flow from previous tweets.
 """
+
 
 class GroqLLM(LLM, BaseModel):
     api_key: str = Field(default=GROQ_API_KEY)
@@ -160,7 +165,7 @@ def _process_chunked_transcript(
             transcript=chunk,
             audience_type=tone,
             context_note=context_note,
-            tweet_count="3-5"  # Fewer tweets per chunk
+            tweet_count="1"  # Fewer tweets per chunk
         ))
         
         if not response.startswith("[ERROR]"):
