@@ -84,6 +84,4 @@ Each column will have `Yes` or `No` based on the presence of keywords.
 ---
 
 ## License  
-This project , as for all others in this repository ,is licensed under the MIT License.  
-```
-LICENSE
+This project , as for all others in this repository ,is licensed under the MIT License. 
